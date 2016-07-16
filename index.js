@@ -6,12 +6,13 @@ var createModels = require('./models');
 
 var app = express();
 var sequelize = new Sequelize(config.database, config.username, config.password, config);
-var models = createModels(sequelize, Sequelize);
 
 app.set('view engine', 'jade');
 
+app.set('models', createModels(sequelize, Sequelize));
+
 app.get('/', function(req, res) {
-  var userModel = models.userModel;
+  var userModel = app.get('models').userModel;
   userModel
     .create({
       name: "kentaro horie"
