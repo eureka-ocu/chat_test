@@ -2,15 +2,16 @@ var express = require('express');
 var Sequelize = require('sequelize');
 var env = process.env.NODE_ENV || 'development';
 var config = require('./config/config')[env];
-var createUserModel = require('./models/user');
+var createModels = require('./models');
 
 var app = express();
 var sequelize = new Sequelize(config.database, config.username, config.password, config);
+var models = createModels(sequelize, Sequelize);
 
 app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
-  var userModel = createUserModel(sequelize, Sequelize);
+  var userModel = models.userModel;
   userModel
     .create({
       name: "kentaro horie"
