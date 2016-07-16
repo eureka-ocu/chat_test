@@ -8,15 +8,12 @@ app.get('/', function(req, res) {
   var new_user = user.build({
     name: "kentaro horie"
   });
-  new_user.save().success(function() {
+  new_user.save().then(function() {
     var show_user;
     user.find({
       where: {name: 'kentaro horie'}
-    }).success(function(get_user) {
-      show_user = {
-        name: get_user.name
-      };
-      res.render('index', {user: show_user})
+    }).then(function(user) {
+      res.render('index', { user: user.name })
     })
   });
 });
