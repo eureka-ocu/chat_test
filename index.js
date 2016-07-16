@@ -1,24 +1,35 @@
 var express = require('express');
+var Sequelize = require('sequelize');
+var env = process.env.NODE_ENV || 'development';
+var config = require('./config/config')[env];
+var createUserModel = require('./models/user');
+
 var app = express();
+var sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
-  var user = require('./models/user').user;
-  var new_user = user.build({
-    name: "kentaro horie"
-  });
-  new_user.save().then(function() {
-    var show_user;
-    user.find({
-      where: {name: 'kentaro horie'}
-    }).then(function(user) {
-      res.render('index', { user: user.name })
+  var userModel = createUserModel(sequelize, Sequelize);
+  userModel
+    .create({
+      name: "kentaro horie"
     })
-  });
+    .then(function() {
+      userModel
+        .find({
+          where: { name: 'kentaro horie' }
+        })
+        .then(function(foundUser) {
+          res.render('index', { user: foundUser.name })
+        });
+    });
 });
 
-var server = app.listen(8888, function() {
-		console.log('server start...');
-		});
-
+sequelize
+  .sync()
+  .then(function() {
+    app.listen(8888, function() {
+      console.log('server start...');
+    });
+  })
