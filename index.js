@@ -1,37 +1,37 @@
-var express = require('express');
-var Sequelize = require('sequelize');
-var env = process.env.NODE_ENV || 'development';
-var config = require('./config/config')[env];
-var createModels = require('./models');
+import express from 'express';
+import Sequelize from 'sequelize';
+import config from './config/config';
+import { createModels } from './models';
 
-var app = express();
-var sequelize = new Sequelize(config.database, config.username, config.password, config);
+const env = process.env.NODE_ENV || 'development';
+const appConfig = config[env];
+
+const app = express();
+const sequelize = new Sequelize(appConfig.database, appConfig.username, appConfig.password, appConfig);
 
 app.set('view engine', 'jade');
 
 app.set('models', createModels(sequelize, Sequelize));
 
-app.get('/', function(req, res) {
-  var userModel = app.get('models').userModel;
+app.get('/', (req, res) => {
+  const { userModel } = app.get('models');
   userModel
     .create({
       name: "kentaro horie"
     })
-    .then(function() {
+    .then(() =>
       userModel
         .find({
           where: { name: 'kentaro horie' }
         })
-        .then(function(foundUser) {
+        .then(foundUser =>
           res.render('index', { user: foundUser.name })
-        });
-    });
+        )
+    );
 });
 
 sequelize
   .sync()
-  .then(function() {
-    app.listen(8888, function() {
-      console.log('server start...');
-    });
-  })
+  .then(() =>
+    app.listen(8888, () => console.log('server start...'))
+  );

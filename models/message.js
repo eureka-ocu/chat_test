@@ -1,5 +1,4 @@
-module.exports = function(sequelize, dataTypes) {
-  return sequelize.define('message', {
+export const createMessageModel = (sequelize, dataTypes) =>
+  sequelize.define('message', {
     body: dataTypes.STRING
   });
-};

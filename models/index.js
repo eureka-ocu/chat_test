@@ -1,9 +1,9 @@
-var createUserModel = require('./user');
-var createMessageModel = require('./message');
+import { createUserModel } from './user';
+import { createMessageModel } from './message';
 
-module.exports = function(sequelize, dataTypes) {
-  var userModel = createUserModel(sequelize, dataTypes);
-  var messageModel = createMessageModel(sequelize, dataTypes);
+export const createModels = (sequelize, dataTypes) => {
+  const userModel = createUserModel(sequelize, dataTypes);
+  const messageModel = createMessageModel(sequelize, dataTypes);
 
   messageModel.belongsTo(userModel);
 
